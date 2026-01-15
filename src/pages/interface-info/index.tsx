@@ -10,11 +10,14 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 import { useRequest } from '@umijs/max';
-import { Button, Drawer, message } from 'antd';
+import { Button, Drawer, message, Popconfirm } from 'antd';
 import type { SortOrder } from 'antd/lib/table/interface';
 import React, { useCallback, useRef, useState } from 'react';
 import { removeRule } from '@/services/ant-design-pro/api';
-import { listInterfaceInfoVoByPageUsingPost } from '@/services/api-backend/interfaceInfoController';
+import {
+  deleteInterfaceInfoUsingPost,
+  listInterfaceInfoVoByPageUsingPost,
+} from '@/services/api-backend/interfaceInfoController';
 import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
 
@@ -63,7 +66,7 @@ const TableList: React.FC = () => {
       dataIndex: 'url',
     },
     {
-      title: '请求方法',
+      title: '请求类型',
       dataIndex: 'method',
       valueEnum: {
         GET: {
@@ -139,11 +142,28 @@ const TableList: React.FC = () => {
       valueType: 'option',
       render: (_, record) => [
         <UpdateForm
-          trigger={<a>修改</a>}
-          key="edit"
-          onOk={actionRef.current?.reload}
+          key="update"
+          reload={actionRef.current?.reload}
           values={record}
         />,
+        <Popconfirm
+          title="确认删除该接口吗？"
+          description=""
+          onConfirm={async () => {
+            const res = await deleteInterfaceInfoUsingPost({ id: record.id });
+            if (res.code === 0) {
+              message.success('操作成功');
+              actionRef.current?.reload();
+            } else {
+              message.error(res.message);
+            }
+          }}
+          onCancel={() => {}}
+          okText="确认"
+          cancelText="取消"
+        >
+          <a style={{ color: 'red' }}>删除</a>
+        </Popconfirm>,
       ],
     },
   ];
@@ -183,8 +203,8 @@ const TableList: React.FC = () => {
         ]}
         request={async (
           params,
-          sort: Record<string, SortOrder>,
-          filter: Record<string, (string | number)[] | null>,
+          _sort: Record<string, SortOrder>,
+          _filter: Record<string, (string | number)[] | null>,
         ) => {
           const res = await listInterfaceInfoVoByPageUsingPost({ ...params });
           if (res.data) {

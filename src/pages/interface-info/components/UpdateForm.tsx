@@ -1,15 +1,15 @@
 import {
-  ProFormDateTimePicker,
-  ProFormRadio,
+  type ActionType,
+  ModalForm,
   ProFormSelect,
+  ProFormSwitch,
   ProFormText,
   ProFormTextArea,
-  StepsForm,
 } from '@ant-design/pro-components';
-import { useRequest } from '@umijs/max';
-import { Modal, message } from 'antd';
-import React, { cloneElement, useCallback, useState } from 'react';
-import { updateRule } from '@/services/ant-design-pro/api';
+import { message } from 'antd';
+import React, { useState } from 'react';
+import { updateInterfaceInfoUsingPost } from '@/services/api-backend/interfaceInfoController';
+
 export type FormValueType = {
   target?: string;
   template?: string;
@@ -17,168 +17,139 @@ export type FormValueType = {
   time?: string;
   frequency?: string;
 } & Partial<API.RuleListItem>;
+
 export type UpdateFormProps = {
-  trigger?: React.ReactElement<any>;
-  onOk?: () => void;
   values: Partial<API.RuleListItem>;
+  reload?: ActionType['reload'];
 };
 const UpdateForm: React.FC<UpdateFormProps> = (props) => {
-  const { onOk, values, trigger } = props;
-  const [open, setOpen] = useState(false);
-  const [messageApi, contextHolder] = message.useMessage();
-  const { run } = useRequest(updateRule, {
-    manual: true,
-    onSuccess: () => {
-      messageApi.success('Configuration is successful');
-      onOk?.();
-    },
-    onError: () => {
-      messageApi.error('Configuration failed, please try again!');
-    },
-  });
-  const onCancel = useCallback(() => {
-    setOpen(false);
-  }, []);
-  const onOpen = useCallback(() => {
-    setOpen(true);
-  }, []);
-  const onFinish = useCallback(
-    async (values?: any) => {
-      await run({
-        data: values,
-      });
-      onCancel();
-    },
-    [onCancel, run],
-  );
+  const { reload, values } = props;
+  const [_messageApi, contextHolder] = message.useMessage();
+  const [confirmLoading, setConfirmLoading] = useState(false);
+
   return (
     <>
       {contextHolder}
-      {trigger
-        ? cloneElement(trigger, {
-            onClick: onOpen,
-          })
-        : null}
-      <StepsForm
-        stepsProps={{
-          size: 'small',
+      <ModalForm
+        title={'修改接口'}
+        trigger={<a>修改</a>}
+        initialValues={values}
+        width="400px"
+        modalProps={{
+          destroyOnHidden: true,
+          okButtonProps: {
+            confirmLoading,
+          },
         }}
-        stepsFormRender={(dom, submitter) => {
-          return (
-            <Modal
-              width={640}
-              styles={{
-                body: {
-                  padding: '32px 40px 48px',
-                },
-              }}
-              destroyOnHidden
-              title={'规则配置'}
-              open={open}
-              footer={submitter}
-              onCancel={onCancel}
-            >
-              {dom}
-            </Modal>
-          );
+        onFinish={async (value) => {
+          setConfirmLoading(true);
+          const res = await updateInterfaceInfoUsingPost({
+            ...value,
+            id: values.id,
+            status: value.status === true ? 1 : 0,
+          });
+          if (res.code === 0) {
+            message.success('提交成功');
+            // 调用父组件传来的 reload 方法刷新表格
+            reload?.();
+            setConfirmLoading(false);
+            return true;
+          } else {
+            message.error(res.message);
+          }
         }}
-        onFinish={onFinish}
       >
-        <StepsForm.StepForm initialValues={values} title={'基本信息'}>
-          <ProFormText
-            name="name"
-            label={'规则名称'}
-            width="md"
-            rules={[
-              {
-                required: true,
-                message: '请输入规则名称！',
-              },
-            ]}
-          />
-          <ProFormTextArea
-            name="desc"
-            width="md"
-            label={'规则描述'}
-            placeholder={'请输入至少五个字符'}
-            rules={[
-              {
-                required: true,
-                message: '请输入至少五个字符的规则描述！',
-                min: 5,
-              },
-            ]}
-          />
-        </StepsForm.StepForm>
-        <StepsForm.StepForm
-          initialValues={{
-            target: '0',
-            template: '0',
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: '接口名称为必填项',
+            },
+            {
+              max: 15,
+              message: '接口名称过长',
+            },
+          ]}
+          width="md"
+          name="name"
+          label="接口名称"
+        />
+        <ProFormTextArea
+          width="md"
+          name="description"
+          label="接口描述"
+          fieldProps={{ rows: 2 }}
+          rules={[
+            {
+              max: 50,
+              message: '接口描述长度不能超过50字符',
+            },
+          ]}
+        />
+        <ProFormTextArea
+          width="md"
+          name="url"
+          label="地址"
+          fieldProps={{ rows: 1 }}
+          rules={[
+            {
+              required: true,
+              message: '接口地址为必填项',
+            },
+            {
+              max: 512,
+              message: '接口地址长度不能超过512字符',
+            },
+          ]}
+        />
+        <ProFormSelect
+          name="method"
+          label="请求类型"
+          showSearch
+          debounceTime={300}
+          valueEnum={{
+            GET: 'GET',
+            POST: 'POST',
+            PUT: 'PUT',
+            DELETE: 'DELETE',
+            FETCH: 'FETCH',
           }}
-          title={'配置规则属性'}
-        >
-          <ProFormSelect
-            name="target"
-            width="md"
-            label={'监控对象'}
-            valueEnum={{
-              0: '表一',
-              1: '表二',
-            }}
-          />
-          <ProFormSelect
-            name="template"
-            width="md"
-            label={'规则模板'}
-            valueEnum={{
-              0: '规则模板一',
-              1: '规则模板二',
-            }}
-          />
-          <ProFormRadio.Group
-            name="type"
-            label={'规则类型'}
-            options={[
-              {
-                value: '0',
-                label: '强',
-              },
-              {
-                value: '1',
-                label: '弱',
-              },
-            ]}
-          />
-        </StepsForm.StepForm>
-        <StepsForm.StepForm
-          initialValues={{
-            type: '1',
-            frequency: 'month',
+          placeholder="选择请求类型"
+          rules={[{ required: true, message: '请求类型为必填项' }]}
+        />
+        <ProFormTextArea
+          width="md"
+          name="requestHeader"
+          label="请求头"
+          fieldProps={{ rows: 2 }}
+          rules={[
+            {
+              max: 512,
+              message: '请求头长度不能超过512字符',
+            },
+          ]}
+        />
+        <ProFormTextArea
+          width="md"
+          name="responseHeader"
+          label="响应头"
+          fieldProps={{ rows: 2 }}
+          rules={[
+            {
+              max: 512,
+              message: '响应头长度不能超过512字符',
+            },
+          ]}
+        />
+        <ProFormSwitch
+          name="status"
+          label="接口状态"
+          fieldProps={{
+            checkedChildren: '开启',
+            unCheckedChildren: '关闭',
           }}
-          title={'设定调度周期'}
-        >
-          <ProFormDateTimePicker
-            name="time"
-            width="md"
-            label={'开始时间'}
-            rules={[
-              {
-                required: true,
-                message: '请选择开始时间！',
-              },
-            ]}
-          />
-          <ProFormSelect
-            name="frequency"
-            label={'监控对象'}
-            width="md"
-            valueEnum={{
-              month: '月',
-              week: '周',
-            }}
-          />
-        </StepsForm.StepForm>
-      </StepsForm>
+        />
+      </ModalForm>
     </>
   );
 };
