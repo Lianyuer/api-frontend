@@ -9,11 +9,11 @@ import {
   ProDescriptions,
   ProTable,
 } from '@ant-design/pro-components';
-import { useRequest } from '@umijs/max';
-import { Button, Drawer, message, Popconfirm } from 'antd';
-import type { SortOrder } from 'antd/lib/table/interface';
-import React, { useCallback, useRef, useState } from 'react';
-import { removeRule } from '@/services/ant-design-pro/api';
+import {useRequest} from '@umijs/max';
+import {Button, Drawer, message, Popconfirm} from 'antd';
+import type {SortOrder} from 'antd/lib/table/interface';
+import React, {useCallback, useRef, useState} from 'react';
+import {removeRule} from '@/services/ant-design-pro/api';
 import {
   deleteInterfaceInfoUsingPost,
   listInterfaceInfoVoByPageUsingPost,
@@ -33,17 +33,7 @@ const TableList: React.FC = () => {
    * */
 
   const [messageApi, contextHolder] = message.useMessage();
-  const { run: delRun, loading } = useRequest(removeRule, {
-    manual: true,
-    onSuccess: () => {
-      setSelectedRows([]);
-      actionRef.current?.reloadAndRest?.();
-      messageApi.success('Deleted successfully and will refresh soon');
-    },
-    onError: () => {
-      messageApi.error('Delete failed, please try again');
-    },
-  });
+
   const columns: ProColumns<API.RuleListItem>[] = [
     {
       title: 'id',
@@ -150,7 +140,7 @@ const TableList: React.FC = () => {
           title="确认删除该接口吗？"
           description=""
           onConfirm={async () => {
-            const res = await deleteInterfaceInfoUsingPost({ id: record.id });
+            const res = await deleteInterfaceInfoUsingPost({id: record.id});
             if (res.code === 0) {
               message.success('操作成功');
               actionRef.current?.reload();
@@ -158,36 +148,17 @@ const TableList: React.FC = () => {
               message.error(res.message);
             }
           }}
-          onCancel={() => {}}
+          onCancel={() => {
+          }}
           okText="确认"
           cancelText="取消"
         >
-          <a style={{ color: 'red' }}>删除</a>
+          <a style={{color: 'red'}}>删除</a>
         </Popconfirm>,
       ],
     },
   ];
 
-  /**
-   *  Delete node
-   * @zh-CN 删除节点
-   *
-   * @param selectedRows
-   */
-  const handleRemove = useCallback(
-    async (selectedRows: API.RuleListItem[]) => {
-      if (!selectedRows?.length) {
-        messageApi.warning('请选择删除项');
-        return;
-      }
-      await delRun({
-        data: {
-          key: selectedRows.map((row) => row.id),
-        },
-      });
-    },
-    [delRun, messageApi.warning],
-  );
   return (
     <PageContainer>
       {contextHolder}
@@ -199,14 +170,29 @@ const TableList: React.FC = () => {
           labelWidth: 120,
         }}
         toolBarRender={() => [
-          <CreateForm key="create" reload={actionRef.current?.reload} />,
+          <CreateForm key="create" reload={actionRef.current?.reload}/>,
         ]}
         request={async (
           params,
-          _sort: Record<string, SortOrder>,
+          sort: Record<string, SortOrder>, // 修改参数名从 _sort 为 sort
           _filter: Record<string, (string | number)[] | null>,
         ) => {
-          const res = await listInterfaceInfoVoByPageUsingPost({ ...params });
+          // 构建排序字段
+          let sortField = 'createTime';
+          let sortOrder = 'desc';
+
+          // 如果有排序参数，解析排序字段和顺序
+          if (Object.keys(sort).length > 0) {
+            const sortKey = Object.keys(sort)[0];
+            sortField = sortKey;
+            sortOrder = sort[sortKey] === 'ascend' ? 'asc' : 'desc';
+          }
+
+          const res = await listInterfaceInfoVoByPageUsingPost({
+            ...params,
+            sortField, // 排序字段
+            sortOrder, // 排序方式
+          });
           if (res.data) {
             return {
               data: res.data.records || [],
