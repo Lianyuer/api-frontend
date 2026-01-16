@@ -9,11 +9,11 @@ import {
   ProDescriptions,
   ProTable,
 } from '@ant-design/pro-components';
-import {useRequest} from '@umijs/max';
-import {Button, Drawer, message, Popconfirm} from 'antd';
-import type {SortOrder} from 'antd/lib/table/interface';
-import React, {useCallback, useRef, useState} from 'react';
-import {removeRule} from '@/services/ant-design-pro/api';
+import { useRequest } from '@umijs/max';
+import { Button, Drawer, message, Popconfirm } from 'antd';
+import type { SortOrder } from 'antd/lib/table/interface';
+import React, { useCallback, useRef, useState } from 'react';
+import { removeRule } from '@/services/ant-design-pro/api';
 import {
   deleteInterfaceInfoUsingPost,
   listInterfaceInfoVoByPageUsingPost,
@@ -104,7 +104,7 @@ const TableList: React.FC = () => {
     {
       title: '创建人',
       render: (_, record) => [
-        <span key={record.userVO.id}>
+        <span key={`user-${record.id}`}>
           {record?.userVO.userName
             ? record?.userVO.userName
             : record?.userVO.id}
@@ -137,10 +137,11 @@ const TableList: React.FC = () => {
           values={record}
         />,
         <Popconfirm
+          key="delete"
           title="确认删除该接口吗？"
           description=""
           onConfirm={async () => {
-            const res = await deleteInterfaceInfoUsingPost({id: record.id});
+            const res = await deleteInterfaceInfoUsingPost({ id: record.id });
             if (res.code === 0) {
               message.success('操作成功');
               actionRef.current?.reload();
@@ -148,12 +149,13 @@ const TableList: React.FC = () => {
               message.error(res.message);
             }
           }}
-          onCancel={() => {
-          }}
+          onCancel={() => {}}
           okText="确认"
           cancelText="取消"
         >
-          <a style={{color: 'red'}}>删除</a>
+          <a key="rowDel" style={{ color: 'red' }}>
+            删除
+          </a>
         </Popconfirm>,
       ],
     },
@@ -170,7 +172,7 @@ const TableList: React.FC = () => {
           labelWidth: 120,
         }}
         toolBarRender={() => [
-          <CreateForm key="create" reload={actionRef.current?.reload}/>,
+          <CreateForm key="create" reload={actionRef.current?.reload} />,
         ]}
         request={async (
           params,
