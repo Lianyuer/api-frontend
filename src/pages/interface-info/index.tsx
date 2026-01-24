@@ -1,26 +1,26 @@
-import type {
-  ActionType,
-  ProColumns,
-  ProDescriptionsItemProps,
-} from '@ant-design/pro-components';
-import {
-  FooterToolbar,
-  PageContainer,
-  ProDescriptions,
-  ProTable,
-} from '@ant-design/pro-components';
-import { Button, Drawer, message, Popconfirm, Typography } from 'antd';
-import type { SortOrder } from 'antd/lib/table/interface';
-import React, { useRef, useState } from 'react';
-import { InterfaceInfoStatusEnum } from '@/enums/InterfaceInfoStatusEnum';
+import { InterfaceInfoStatusEnum } from "@/enums/InterfaceInfoStatusEnum";
 import {
   deleteInterfaceInfoUsingPost,
   listInterfaceInfoVoByPageUsingPost,
   offlineInterfaceInfoUsingPost,
   onlineInterfaceInfoUsingPost,
-} from '@/services/api-backend/interfaceInfoController';
-import CreateForm from './components/CreateForm';
-import UpdateForm from './components/UpdateForm';
+} from "@/services/api-backend/interfaceInfoController";
+import type {
+  ActionType,
+  ProColumns,
+  ProDescriptionsItemProps,
+} from "@ant-design/pro-components";
+import {
+  FooterToolbar,
+  PageContainer,
+  ProDescriptions,
+  ProTable,
+} from "@ant-design/pro-components";
+import { App, Button, Drawer, Popconfirm, Typography } from "antd";
+import type { SortOrder } from "antd/lib/table/interface";
+import React, { useRef, useState } from "react";
+import CreateForm from "./components/CreateForm";
+import UpdateForm from "./components/UpdateForm";
 
 const { Link } = Typography;
 
@@ -35,77 +35,76 @@ const TableList: React.FC = () => {
    * @zh-CN 国际化配置
    * */
 
-  const [messageApi, contextHolder] = message.useMessage();
-
+  const { message } = App.useApp();
   const columns: ProColumns<API.RuleListItem>[] = [
     {
-      title: 'id',
-      dataIndex: 'id',
+      title: "id",
+      dataIndex: "id",
       search: false,
       hideInTable: true,
     },
     {
-      title: '接口名称',
-      dataIndex: 'name',
+      title: "接口名称",
+      dataIndex: "name",
     },
     {
-      title: '描述',
-      dataIndex: 'description',
-      valueType: 'textarea',
+      title: "描述",
+      dataIndex: "description",
+      valueType: "textarea",
       search: false,
     },
     {
-      title: '地址',
-      dataIndex: 'url',
+      title: "地址",
+      dataIndex: "url",
     },
     {
-      title: '请求类型',
-      dataIndex: 'method',
+      title: "请求类型",
+      dataIndex: "method",
       valueEnum: {
         GET: {
-          text: 'GET',
+          text: "GET",
         },
         POST: {
-          text: 'POST',
+          text: "POST",
         },
         PUT: {
-          text: 'PUT',
+          text: "PUT",
         },
         DELETE: {
-          text: 'DELETE',
+          text: "DELETE",
         },
         FETCH: {
-          text: 'FETCH',
+          text: "FETCH",
         },
       },
     },
     {
-      title: '请求头',
-      dataIndex: 'requestHeader',
+      title: "请求头",
+      dataIndex: "requestHeader",
       search: false,
     },
     {
-      title: '响应头',
-      dataIndex: 'responseHeader',
+      title: "响应头",
+      dataIndex: "responseHeader",
       search: false,
     },
     {
-      title: '状态',
-      dataIndex: 'status',
+      title: "状态",
+      dataIndex: "status",
       hideInForm: true,
       valueEnum: {
         0: {
-          text: '关闭',
-          status: 'Error',
+          text: "关闭",
+          status: "Error",
         },
         1: {
-          text: '开启',
-          status: 'Success',
+          text: "开启",
+          status: "Success",
         },
       },
     },
     {
-      title: '创建人',
+      title: "创建人",
       render: (_, record) => [
         <span key={`user-${record.id}`}>
           {record?.userVO.userName
@@ -116,23 +115,23 @@ const TableList: React.FC = () => {
       search: false,
     },
     {
-      title: '创建时间',
+      title: "创建时间",
       sorter: true,
-      dataIndex: 'createTime',
-      valueType: 'dateTime',
+      dataIndex: "createTime",
+      valueType: "dateTime",
       search: false,
     },
     {
-      title: '更新时间',
+      title: "更新时间",
       sorter: true,
-      dataIndex: 'updateTime',
-      valueType: 'dateTime',
+      dataIndex: "updateTime",
+      valueType: "dateTime",
       search: false,
     },
     {
-      title: '操作',
-      dataIndex: 'option',
-      valueType: 'option',
+      title: "操作",
+      dataIndex: "option",
+      valueType: "option",
       render: (_, record) => [
         <UpdateForm
           key="update"
@@ -146,7 +145,7 @@ const TableList: React.FC = () => {
             onClick={async () => {
               const res = await onlineInterfaceInfoUsingPost({ id: record.id });
               if (res.code === 0) {
-                message.success('操作成功');
+                message.success("操作成功");
                 actionRef.current?.reload();
               } else {
                 message.error(res.message);
@@ -165,7 +164,7 @@ const TableList: React.FC = () => {
                 id: record.id,
               });
               if (res.code === 0) {
-                message.success('操作成功');
+                message.success("操作成功");
                 actionRef.current?.reload();
               } else {
                 message.error(res.message);
@@ -185,7 +184,7 @@ const TableList: React.FC = () => {
           onConfirm={async () => {
             const res = await deleteInterfaceInfoUsingPost({ id: record.id });
             if (res.code === 0) {
-              message.success('操作成功');
+              message.success("操作成功");
               actionRef.current?.reload();
             } else {
               message.error(res.message);
@@ -195,7 +194,7 @@ const TableList: React.FC = () => {
           okText="确认"
           cancelText="取消"
         >
-          <a key="rowDel" style={{ color: 'red' }}>
+          <a key="rowDel" style={{ color: "red" }}>
             删除
           </a>
         </Popconfirm>,
@@ -204,9 +203,8 @@ const TableList: React.FC = () => {
   ];
   return (
     <PageContainer>
-      {contextHolder}
       <ProTable<API.RuleListItem, API.PageParams>
-        headerTitle={'查询表格'}
+        headerTitle={"查询表格"}
         actionRef={actionRef}
         rowKey="id"
         search={{
@@ -215,20 +213,21 @@ const TableList: React.FC = () => {
         toolBarRender={() => [
           <CreateForm key="create" actionRef={actionRef} />,
         ]}
+        pagination={{ pageSize: 10 }}
         request={async (
           params,
           sort: Record<string, SortOrder>, // 修改参数名从 _sort 为 sort
-          _filter: Record<string, (string | number)[] | null>,
+          _filter: Record<string, (string | number)[] | null>
         ) => {
           // 构建排序字段
-          let sortField = 'createTime';
-          let sortOrder = 'desc';
+          let sortField = "createTime";
+          let sortOrder = "desc";
 
           // 如果有排序参数，解析排序字段和顺序
           if (Object.keys(sort).length > 0) {
             const sortKey = Object.keys(sort)[0];
             sortField = sortKey;
-            sortOrder = sort[sortKey] === 'ascend' ? 'asc' : 'desc';
+            sortOrder = sort[sortKey] === "ascend" ? "asc" : "desc";
           }
 
           const res = await listInterfaceInfoVoByPageUsingPost({
@@ -240,7 +239,7 @@ const TableList: React.FC = () => {
             return {
               data: res.data.records || [],
               success: true,
-              total: res.total,
+              total: res.data.total,
             };
           }
         }}
@@ -255,21 +254,21 @@ const TableList: React.FC = () => {
         <FooterToolbar
           extra={
             <div>
-              已选择{' '}
+              已选择{" "}
               <a
                 style={{
                   fontWeight: 600,
                 }}
               >
                 {selectedRowsState.length}
-              </a>{' '}
+              </a>{" "}
               项 &nbsp;&nbsp;
               <span>
-                服务调用次数总计{' '}
+                服务调用次数总计{" "}
                 {selectedRowsState.reduce(
                   (pre, item) => pre + (item.callNo ?? 0),
-                  0,
-                )}{' '}
+                  0
+                )}{" "}
                 万
               </span>
             </div>
