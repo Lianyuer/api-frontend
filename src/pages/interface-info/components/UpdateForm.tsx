@@ -1,3 +1,4 @@
+import { updateInterfaceInfoUsingPost } from "@/services/api-backend/interfaceInfoController";
 import {
   type ActionType,
   ModalForm,
@@ -5,10 +6,9 @@ import {
   ProFormSwitch,
   ProFormText,
   ProFormTextArea,
-} from '@ant-design/pro-components';
-import { App, message } from 'antd';
-import React, { useState } from 'react';
-import { updateInterfaceInfoUsingPost } from '@/services/api-backend/interfaceInfoController';
+} from "@ant-design/pro-components";
+import { App } from "antd";
+import React, { useState } from "react";
 
 export type FormValueType = {
   target?: string;
@@ -20,7 +20,7 @@ export type FormValueType = {
 
 export type UpdateFormProps = {
   values: Partial<API.RuleListItem>;
-  reload?: ActionType['reload'];
+  reload?: ActionType["reload"];
 };
 const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   const { reload, values } = props;
@@ -29,7 +29,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
 
   return (
     <ModalForm
-      title={'修改接口'}
+      title={"修改接口"}
       trigger={<a>修改</a>}
       initialValues={values}
       width="400px"
@@ -47,7 +47,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           status: value.status === true ? 1 : 0,
         });
         if (res.code === 0) {
-          message.success('提交成功');
+          message.success("提交成功");
           // 调用父组件传来的 reload 方法刷新表格
           reload?.();
           setConfirmLoading(false);
@@ -61,11 +61,11 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         rules={[
           {
             required: true,
-            message: '接口名称为必填项',
+            message: "接口名称为必填项",
           },
           {
             max: 15,
-            message: '接口名称过长',
+            message: "接口名称过长",
           },
         ]}
         width="md"
@@ -80,7 +80,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         rules={[
           {
             max: 50,
-            message: '接口描述长度不能超过50字符',
+            message: "接口描述长度不能超过50字符",
           },
         ]}
       />
@@ -92,11 +92,11 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         rules={[
           {
             required: true,
-            message: '接口地址为必填项',
+            message: "接口地址为必填项",
           },
           {
             max: 512,
-            message: '接口地址长度不能超过512字符',
+            message: "接口地址长度不能超过512字符",
           },
         ]}
       />
@@ -106,14 +106,14 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         showSearch
         debounceTime={300}
         valueEnum={{
-          GET: 'GET',
-          POST: 'POST',
-          PUT: 'PUT',
-          DELETE: 'DELETE',
-          FETCH: 'FETCH',
+          GET: "GET",
+          POST: "POST",
+          PUT: "PUT",
+          DELETE: "DELETE",
+          PATCH: "PATCH",
         }}
         placeholder="选择请求类型"
-        rules={[{ required: true, message: '请求类型为必填项' }]}
+        rules={[{ required: true, message: "请求类型为必填项" }]}
       />
       <ProFormTextArea
         width="md"
@@ -123,7 +123,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         rules={[
           {
             max: 512,
-            message: '请求头长度不能超过512字符',
+            message: "请求头长度不能超过512字符",
           },
         ]}
       />
@@ -135,7 +135,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         rules={[
           {
             max: 512,
-            message: '响应头长度不能超过512字符',
+            message: "响应头长度不能超过512字符",
           },
         ]}
       />
@@ -143,8 +143,8 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         name="status"
         label="接口状态"
         fieldProps={{
-          checkedChildren: '开启',
-          unCheckedChildren: '关闭',
+          checkedChildren: "开启",
+          unCheckedChildren: "关闭",
         }}
       />
     </ModalForm>

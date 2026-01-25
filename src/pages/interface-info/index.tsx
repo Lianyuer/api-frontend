@@ -73,8 +73,8 @@ const TableList: React.FC = () => {
         DELETE: {
           text: "DELETE",
         },
-        FETCH: {
-          text: "FETCH",
+        PATCH: {
+          text: "PATCH",
         },
       },
     },
