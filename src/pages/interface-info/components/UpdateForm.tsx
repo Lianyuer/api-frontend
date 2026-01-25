@@ -3,7 +3,6 @@ import {
   type ActionType,
   ModalForm,
   ProFormSelect,
-  ProFormSwitch,
   ProFormText,
   ProFormTextArea,
 } from "@ant-design/pro-components";
@@ -44,7 +43,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         const res = await updateInterfaceInfoUsingPost({
           ...value,
           id: values.id,
-          status: value.status === true ? 1 : 0,
         });
         if (res.code === 0) {
           message.success("提交成功");
@@ -138,14 +136,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
             message: "响应头长度不能超过512字符",
           },
         ]}
-      />
-      <ProFormSwitch
-        name="status"
-        label="接口状态"
-        fieldProps={{
-          checkedChildren: "开启",
-          unCheckedChildren: "关闭",
-        }}
       />
     </ModalForm>
   );

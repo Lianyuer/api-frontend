@@ -4,7 +4,6 @@ import {
   type ActionType,
   ModalForm,
   ProFormSelect,
-  ProFormSwitch,
   ProFormText,
   ProFormTextArea,
 } from "@ant-design/pro-components";
@@ -33,9 +32,6 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           新建
         </Button>
       }
-      initialValues={{
-        status: 0,
-      }}
       width="400px"
       modalProps={{
         destroyOnHidden: true,
@@ -46,7 +42,6 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
       onFinish={async (value) => {
         const convertedValues = {
           ...value,
-          status: value.status === true ? 1 : 0,
         };
         setConfirmLoading(true);
         const res = await addInterfaceInfoUsingPost(convertedValues);
@@ -145,14 +140,6 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
             message: "响应头长度不能超过512字符",
           },
         ]}
-      />
-      <ProFormSwitch
-        name="status"
-        label="接口状态"
-        fieldProps={{
-          checkedChildren: "开启",
-          unCheckedChildren: "关闭",
-        }}
       />
     </ModalForm>
   );
