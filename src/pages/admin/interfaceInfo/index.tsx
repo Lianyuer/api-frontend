@@ -1,4 +1,4 @@
-import { InterfaceInfoStatusEnum } from "@/enums/InterfaceInfoStatusEnum";
+import {InterfaceInfoStatusEnum} from "@/enums/InterfaceInfoStatusEnum";
 import {
   deleteInterfaceInfoUsingPost,
   listInterfaceInfoVoByPageUsingPost,
@@ -16,13 +16,14 @@ import {
   ProDescriptions,
   ProTable,
 } from "@ant-design/pro-components";
-import { App, Button, Drawer, Popconfirm, Typography } from "antd";
-import type { SortOrder } from "antd/lib/table/interface";
-import React, { useRef, useState } from "react";
-import CreateForm from "./components/CreateForm";
-import UpdateForm from "./components/UpdateForm";
+import {App, Button, Drawer, Popconfirm, Typography} from "antd";
+import type {SortOrder} from "antd/lib/table/interface";
+import React, {useRef, useState} from "react";
+import CreateForm from "@/pages/admin/interfaceInfo/components/CreateForm";
+import UpdateForm from "@/pages/admin/interfaceInfo/components/UpdateForm";
 
-const { Link } = Typography;
+
+const {Link} = Typography;
 
 const TableList: React.FC = () => {
   const actionRef = useRef<ActionType | null>(null);
@@ -35,7 +36,7 @@ const TableList: React.FC = () => {
    * @zh-CN 国际化配置
    * */
 
-  const { message } = App.useApp();
+  const {message} = App.useApp();
   const columns: ProColumns<API.RuleListItem>[] = [
     {
       title: "id",
@@ -105,11 +106,11 @@ const TableList: React.FC = () => {
     },
     {
       title: "创建人",
-      render: (_, record) => [
-        <span key={`user-${record.id}`}>
-          {record?.userVO.userName
-            ? record?.userVO.userName
-            : record?.userVO.id}
+      render: (_, record: API.InterfaceInfoVO) => [
+        <span key={`user-${record?.id}`}>
+          {record?.userVO?.userName
+            ? record?.userVO?.userName
+            : record?.userVO?.id}
         </span>,
       ],
       search: false,
@@ -132,7 +133,7 @@ const TableList: React.FC = () => {
       title: "操作",
       dataIndex: "option",
       valueType: "option",
-      render: (_, record) => [
+      render: (_, record: API.InterfaceInfoVO) => [
         <UpdateForm
           key="update"
           reload={actionRef.current?.reload}
@@ -143,7 +144,7 @@ const TableList: React.FC = () => {
           <Link
             key="online" // 必须添加 key
             onClick={async () => {
-              const res = await onlineInterfaceInfoUsingPost({ id: record.id });
+              const res = await onlineInterfaceInfoUsingPost({id: record?.id});
               if (res.code === 0) {
                 message.success("操作成功");
                 actionRef.current?.reload();
@@ -170,7 +171,8 @@ const TableList: React.FC = () => {
                 message.error(res.message);
               }
             }}
-            onCancel={() => {}}
+            onCancel={() => {
+            }}
             okText="确认"
             cancelText="取消"
           >
@@ -182,7 +184,7 @@ const TableList: React.FC = () => {
           title="确认删除该接口吗？"
           description=""
           onConfirm={async () => {
-            const res = await deleteInterfaceInfoUsingPost({ id: record.id });
+            const res = await deleteInterfaceInfoUsingPost({id: record.id});
             if (res.code === 0) {
               message.success("操作成功");
               actionRef.current?.reload();
@@ -190,11 +192,12 @@ const TableList: React.FC = () => {
               message.error(res.message);
             }
           }}
-          onCancel={() => {}}
+          onCancel={() => {
+          }}
           okText="确认"
           cancelText="取消"
         >
-          <a key="rowDel" style={{ color: "red" }}>
+          <a key="rowDel" style={{color: "red"}}>
             删除
           </a>
         </Popconfirm>,
@@ -211,9 +214,9 @@ const TableList: React.FC = () => {
           labelWidth: 120,
         }}
         toolBarRender={() => [
-          <CreateForm key="create" actionRef={actionRef} />,
+          <CreateForm key="create" actionRef={actionRef}/>,
         ]}
-        pagination={{ pageSize: 10 }}
+        pagination={{pageSize: 10}as any}
         request={async (
           params,
           sort: Record<string, SortOrder>, // 修改参数名从 _sort 为 sort
@@ -234,7 +237,7 @@ const TableList: React.FC = () => {
             ...params,
             sortField, // 排序字段
             sortOrder, // 排序方式
-          });
+          } as API.InterfaceInfoQueryRequest);
           if (res.data) {
             return {
               data: res.data.records || [],
@@ -246,7 +249,7 @@ const TableList: React.FC = () => {
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {
-            setSelectedRows(selectedRows);
+            // setSelectedRows(selectedRows);
           },
         }}
       />
@@ -274,7 +277,7 @@ const TableList: React.FC = () => {
             </div>
           }
         >
-          <Button
+          {/*<Button
             loading={loading}
             onClick={() => {
               handleRemove(selectedRowsState);
@@ -282,7 +285,7 @@ const TableList: React.FC = () => {
           >
             批量删除
           </Button>
-          <Button type="primary">批量审批</Button>
+          <Button type="primary">批量审批</Button>*/}
         </FooterToolbar>
       )}
 

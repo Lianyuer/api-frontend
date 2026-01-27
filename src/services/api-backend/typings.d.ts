@@ -149,7 +149,6 @@ declare namespace API {
     name?: string;
     requestHeader?: string;
     responseHeader?: string;
-    status?: number;
     url?: string;
   };
 
@@ -176,7 +175,6 @@ declare namespace API {
     name?: string;
     requestHeader?: string;
     responseHeader?: string;
-    status?: number;
     url?: string;
   };
 
