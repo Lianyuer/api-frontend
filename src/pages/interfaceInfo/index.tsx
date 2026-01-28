@@ -1,9 +1,9 @@
-import { getInterfaceInfoVoByIdUsingGet } from "@/services/api-backend/interfaceInfoController";
-import { PageContainer } from "@ant-design/pro-components";
-import { Badge, Card, Descriptions, message } from "antd";
-import dayjs from "dayjs";
-import React, { useEffect, useState } from "react";
-import { useMatch, useParams } from "react-router";
+import { PageContainer } from '@ant-design/pro-components';
+import { Badge, Card, Descriptions, message } from 'antd';
+import dayjs from 'dayjs';
+import React, { useEffect, useState } from 'react';
+import { useMatch, useParams } from 'react-router';
+import { getInterfaceInfoVoByIdUsingGet } from '@/services/api-backend/interfaceInfoController';
 
 /**
  * 主页
@@ -15,13 +15,13 @@ const Index: React.FC = () => {
   const [data, setData] = useState<API.InterfaceInfo>();
   // 使用useMatch钩子将当前URL与指定的路径模式/interface_info/:id进行匹配，
   // 并将匹配结果赋值给match变量
-  const match = useMatch("/interfaceInfo/:id");
+  const match = useMatch('/interfaceInfo/:id');
   const params = useParams();
 
   const loadData = async (current = 1, pageSize = 5) => {
     // 检查动态路由参数是否存在
     if (!params?.id) {
-      message.error("参数不存在");
+      message.error('参数不存在');
       return;
     }
     setLoading(true);
@@ -29,7 +29,7 @@ const Index: React.FC = () => {
       const res = await getInterfaceInfoVoByIdUsingGet({ id: params.id });
       setData(res.data);
     } catch (error: any) {
-      message.error("请求失败，" + error.message);
+      message.error('请求失败，' + error.message);
     }
     setLoading(false);
   };
@@ -42,20 +42,8 @@ const Index: React.FC = () => {
     <PageContainer title="查看接口文档">
       <Card>
         {data ? (
-          <Descriptions title="接口详情" column={1}>
-            <Descriptions.Item label="接口id">{data?.id}</Descriptions.Item>
-            <Descriptions.Item label="接口名称">{data?.name}</Descriptions.Item>
-            <Descriptions.Item label="接口描述">
-              {data?.description}
-            </Descriptions.Item>
-            <Descriptions.Item label="接口地址">{data?.url}</Descriptions.Item>
-            <Descriptions.Item label="请求头">
-              {data?.requestHeader}
-            </Descriptions.Item>
-            <Descriptions.Item label="响应头">
-              {data?.responseHeader}
-            </Descriptions.Item>
-            <Descriptions.Item label="状态">
+          <Descriptions title={data?.name} column={1}>
+            <Descriptions.Item label="接口状态">
               {data?.status ? (
                 <>
                   <Badge status="success" />
@@ -68,14 +56,24 @@ const Index: React.FC = () => {
                 </>
               )}
             </Descriptions.Item>
+            <Descriptions.Item label="描述">
+              {data?.description}
+            </Descriptions.Item>
+            <Descriptions.Item label="请求地址">{data?.url}</Descriptions.Item>
             <Descriptions.Item label="请求类型">
               {data?.method}
             </Descriptions.Item>
+            <Descriptions.Item label="请求头">
+              {data?.requestHeader}
+            </Descriptions.Item>
+            <Descriptions.Item label="响应头">
+              {data?.responseHeader}
+            </Descriptions.Item>
             <Descriptions.Item label="创建时间">
-              {dayjs(data?.createTime).format("YYYY-MM-DD HH:mm:ss")}
+              {dayjs(data?.createTime).format('YYYY-MM-DD HH:mm:ss')}
             </Descriptions.Item>
             <Descriptions.Item label="更新时间">
-              {dayjs(data?.updateTime).format("YYYY-MM-DD HH:mm:ss")}
+              {dayjs(data?.updateTime).format('YYYY-MM-DD HH:mm:ss')}
             </Descriptions.Item>
           </Descriptions>
         ) : (
