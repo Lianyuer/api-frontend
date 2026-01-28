@@ -1,14 +1,14 @@
-import {PageContainer} from '@ant-design/pro-components';
-import React, {useEffect, useState} from 'react';
-import {DataType} from "csstype";
-import {List, message, Skeleton} from "antd";
-import {listInterfaceInfoVoByPageUsingPost} from "@/services/api-backend/interfaceInfoController";
-import {Link} from "@umijs/max";
+import { PageContainer } from '@ant-design/pro-components';
+import { Link } from '@umijs/max';
+import { List, message, Skeleton } from 'antd';
+import type { DataType } from 'csstype';
+import React, { useEffect, useState } from 'react';
+import { InterfaceInfoStatusEnum } from '@/enums/InterfaceInfoStatusEnum';
+import { listInterfaceInfoVoByPageUsingPost } from '@/services/api-backend/interfaceInfoController';
 
 const PAGE_SIZE = 8;
 
 const Index: React.FC = () => {
-
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState<DataType[]>([]);
   const [total, setTotal] = useState<number>(0);
@@ -17,8 +17,9 @@ const Index: React.FC = () => {
     setLoading(true);
     try {
       const res = await listInterfaceInfoVoByPageUsingPost({
+        status: InterfaceInfoStatusEnum.ONLINE,
         current,
-        pageSize
+        pageSize,
       });
       if (res.code === 0) {
         setList(res?.data?.records ?? []);
@@ -37,32 +38,40 @@ const Index: React.FC = () => {
   }, []);
 
   return (
-    <PageContainer title='在线接口开放平台'>
+    <PageContainer title="在线接口开放平台">
       <List
         className="demo-loadmore-list"
         itemLayout="horizontal"
         dataSource={list}
         loading={loading}
-        pagination={{
-          showTotal(total: number) {
-            return '总数：' + total;
-          },
-          pageSize: PAGE_SIZE,
-          total,
-          // 切换页面触发的回调函数
-          onChange(page, pageSize) {
-            // 加载对应页面的数据
-            loadData(page, pageSize);
-          },
-        }as any}
+        pagination={
+          total !== 0
+            ? ({
+                showTotal(total: number) {
+                  return '总数：' + total;
+                },
+                pageSize: PAGE_SIZE,
+                total,
+                // 切换页面触发的回调函数
+                onChange(page, pageSize) {
+                  // 加载对应页面的数据
+                  loadData(page, pageSize);
+                },
+              } as any)
+            : {}
+        }
         renderItem={(item) => (
           <List.Item
-            actions={[<Link to={"interfaceInfo/" + item.id}>查看</Link>]}
+            actions={[
+              <Link key="view" to={`/interfaceInfo/${item.id}`}>
+                查看
+              </Link>,
+            ]}
           >
             <Skeleton avatar title={false} loading={item.loading} active>
               <List.Item.Meta
                 // href等会要改成接口文档的链接
-                title={<a href={"https://ant.design"}>{item.name}</a>}
+                title={<a href={'https://ant.design'}>{item.name}</a>}
                 description={item.description}
               />
             </Skeleton>
