@@ -79,14 +79,22 @@ const TableList: React.FC = () => {
       },
     },
     {
+      title: '请求参数',
+      dataIndex: 'requestParams',
+      search: false,
+      valueType: 'jsonCode',
+    },
+    {
       title: '请求头',
       dataIndex: 'requestHeader',
       search: false,
+      valueType: 'jsonCode',
     },
     {
       title: '响应头',
       dataIndex: 'responseHeader',
       search: false,
+      valueType: 'jsonCode',
     },
     {
       title: '状态',

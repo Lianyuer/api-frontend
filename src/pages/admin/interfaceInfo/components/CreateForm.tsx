@@ -119,6 +119,18 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
       />
       <ProFormTextArea
         width="md"
+        name="requestParams"
+        label="请求参数"
+        fieldProps={{ rows: 2 }}
+        rules={[
+          {
+            max: 512,
+            message: '请求参数长度不能超过512字符',
+          },
+        ]}
+      />
+      <ProFormTextArea
+        width="md"
         name="requestHeader"
         label="请求头"
         fieldProps={{ rows: 2 }}
