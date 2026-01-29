@@ -82,7 +82,7 @@ const Index: React.FC = () => {
         message.success('请求成功');
         setInvokeRes(res);
       } else {
-        message.error('调用失败，请检查输入');
+        message.error('调用失败，' + res.message);
       }
     } catch (e) {
       message.error('操作失败，' + e.message);
