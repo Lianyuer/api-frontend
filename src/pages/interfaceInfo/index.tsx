@@ -11,7 +11,6 @@ import {
 } from 'antd';
 import type { FormProps } from 'antd/lib';
 import dayjs from 'dayjs';
-import { res } from 'pino-std-serializers';
 import React, { useEffect, useState } from 'react';
 import { useMatch, useParams } from 'react-router';
 import {
@@ -87,7 +86,7 @@ const Index: React.FC = () => {
     }
   };
 
-  const JsonDisplayItem = ({ data, field, label }) => {
+  const JsonDisplayItem = ({ data, field, label, maxHeight }) => {
     const formatJson = (jsonString) => {
       if (!jsonString || jsonString.trim() === '') {
         return { isValid: false, content: '无' };
@@ -126,7 +125,7 @@ const Index: React.FC = () => {
               padding: '12px',
               borderRadius: '4px',
               border: '1px solid #d9d9d9',
-              maxHeight: '300px',
+              maxHeight: maxHeight + 'px',
               overflow: 'auto',
               fontSize: '12px',
             }}
@@ -182,6 +181,7 @@ const Index: React.FC = () => {
                   data={apiData}
                   field="requestParams"
                   label="请求参数"
+                  maxHeight={160}
                 />
               </Descriptions.Item>
               <Descriptions.Item label="请求头" bordered column={1}>
@@ -189,6 +189,7 @@ const Index: React.FC = () => {
                   data={apiData}
                   field="requestHeader"
                   label="请求头"
+                  maxHeight={100}
                 />
               </Descriptions.Item>
               <Descriptions.Item label="响应头" bordered column={1}>
@@ -196,6 +197,7 @@ const Index: React.FC = () => {
                   data={apiData}
                   field="responseHeader"
                   label="响应头"
+                  maxHeight={100}
                 />
               </Descriptions.Item>
               <Descriptions.Item label="创建时间">
@@ -250,7 +252,11 @@ const Index: React.FC = () => {
               loading={invokeLoading}
               title="返回结果"
             >
-              <JsonDisplayItem data={apiData} field="invokeRes" />
+              <JsonDisplayItem
+                data={apiData}
+                field="invokeRes"
+                maxHeight={200}
+              />
             </Card>
           </div>
         ) : (
