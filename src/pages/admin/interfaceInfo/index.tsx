@@ -11,6 +11,7 @@ import {
 } from '@ant-design/pro-components';
 import { App, Drawer, Popconfirm, Typography } from 'antd';
 import type { SortOrder } from 'antd/lib/table/interface';
+import { createStyles } from 'antd-style';
 import React, { useRef, useState } from 'react';
 import { InterfaceInfoStatusEnum } from '@/enums/InterfaceInfoStatusEnum';
 import CreateForm from '@/pages/admin/interfaceInfo/components/CreateForm';
@@ -217,6 +218,7 @@ const TableList: React.FC = () => {
         headerTitle={'查询表格'}
         actionRef={actionRef}
         rowKey="id"
+        scroll={{ x: 'max-content' }}
         search={{
           labelWidth: 120,
         }}
