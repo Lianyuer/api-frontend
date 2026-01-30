@@ -78,12 +78,8 @@ const Index: React.FC = () => {
         id: params.id,
         ...values,
       } as API.InterfaceInfoInvokeRequest);
-      if (res.code === 0) {
-        message.success('请求成功');
-        setInvokeRes(res);
-      } else {
-        message.error('调用失败，' + res.message);
-      }
+      message.success('请求成功');
+      setInvokeRes(res);
     } catch (e) {
       message.error('操作失败，' + e.message);
     } finally {
