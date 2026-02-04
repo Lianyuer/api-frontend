@@ -1,4 +1,15 @@
 declare namespace API {
+  type AkSkVO = {
+    accessKey?: string;
+    secretKey?: string;
+  };
+
+  type BaseResponseAkSkVO_ = {
+    code?: number;
+    data?: AkSkVO;
+    message?: string;
+  };
+
   type BaseResponseBoolean_ = {
     code?: number;
     data?: boolean;

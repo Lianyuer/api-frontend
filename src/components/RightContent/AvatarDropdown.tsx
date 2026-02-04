@@ -1,4 +1,5 @@
 import {
+  LockOutlined,
   LogoutOutlined,
   SettingOutlined,
   UserOutlined,
@@ -85,7 +86,7 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({
       loginOut();
       return;
     }
-    history.push(`/account/${key}`);
+    history.push(`/profiles/${key}`);
   };
 
   const loading = (
@@ -128,6 +129,11 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({
           },
         ]
       : []),
+    {
+      key: 'accessKey',
+      icon: <LockOutlined />,
+      label: 'accessKey',
+    },
     {
       key: 'logout',
       icon: <LogoutOutlined />,

@@ -2,6 +2,16 @@
 /* eslint-disable */
 import { request } from "@umijs/max";
 
+/** getAccessKeyByUserId GET /api/user/accessKey */
+export async function getAccessKeyByUserIdUsingGet(options?: {
+  [key: string]: any;
+}) {
+  return request<API.BaseResponseAkSkVO_>("/api/user/accessKey", {
+    method: "GET",
+    ...(options || {}),
+  });
+}
+
 /** addUser POST /api/user/add */
 export async function addUserUsingPost(
   body: API.UserAddRequest,
