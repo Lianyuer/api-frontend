@@ -29,6 +29,11 @@ export default [
         path: '/admin/interfaceInfo',
         component: './admin/interfaceInfo',
       },
+      {
+        name: '接口分析',
+        path: '/admin/interface_analysis',
+        component: './admin/interfaceAnalysis',
+      },
     ],
   },
   { component: '404', layout: false, path: './*' },
