@@ -4,7 +4,7 @@ import TopInvokeInterface from '@/pages/admin/interfaceAnalysis/components/TopIn
 
 const InterfaceAnalysis: React.FC = () => {
   return (
-    <PageContainer>
+    <PageContainer title="调用次数最多的接口TOP5">
       <TopInvokeInterface />
     </PageContainer>
   );

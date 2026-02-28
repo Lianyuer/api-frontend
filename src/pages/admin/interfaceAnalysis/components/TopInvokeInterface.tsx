@@ -5,20 +5,8 @@ import { listTopInvokeInterfaceInfoUsingGet } from '@/services/api-backend/analy
 export default function TopInvokeInterface() {
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<Chart | null>(null);
-  const dataRef = useRef<{ count: number; item: string; percent: number }[]>(
-    [],
-  );
 
-  const renderBarChart = (container: HTMLDivElement) => {
-    // // 准备数据
-    // const data = [
-    //   {item: '事例一', count: 40, percent: 0.4},
-    //   {item: '事例二', count: 21, percent: 0.21},
-    //   {item: '事例三', count: 17, percent: 0.17},
-    //   {item: '事例四', count: 13, percent: 0.13},
-    //   {item: '事例五', count: 9, percent: 0.09},
-    // ];
-
+  const renderBarChart = (container: HTMLDivElement, chartData: any[]) => {
     const chart = new Chart({
       container,
       autoFit: true, // 添加自动适应
@@ -28,7 +16,7 @@ export default function TopInvokeInterface() {
 
     chart
       .interval()
-      .data(dataRef.current)
+      .data(chartData)
       .transform({ type: 'stackY' })
       .encode('y', 'percent')
       .encode('color', 'item')
@@ -40,7 +28,7 @@ export default function TopInvokeInterface() {
         position: 'outside',
         text: (data) => `${data.item}: ${data.percent * 100}%`,
       })
-      .animate('enter', { type: 'fadeIn', duration: 200 })
+      .animate('enter', { type: 'fadeIn', duration: 150 })
       .tooltip((data) => ({
         name: data.item,
         value: `总调用次数：${data.count}次`,
@@ -54,23 +42,22 @@ export default function TopInvokeInterface() {
     let isMounted = true; // 防止组件卸载后更新状态
 
     async function fetchDataAndInitChart() {
-      const { data } = await listTopInvokeInterfaceInfoUsingGet(); // 请求接口
-      const allInterfaceUsedCount = data.reduce(
+      const res = await listTopInvokeInterfaceInfoUsingGet(); // 请求接口
+      const responseData = res.data;
+      const allInterfaceUsedCount = responseData.reduce(
         (sum, item) => sum + item.totalNum,
         0,
       );
-      dataRef.current = data.map((item) => {
+      const newData = responseData.map((item) => {
         return {
           item: item.name,
           count: item.totalNum,
-          percent: item.totalNum / allInterfaceUsedCount,
+          percent: (item.totalNum / allInterfaceUsedCount).toFixed(3),
         };
       });
+      console.log(newData);
       if (isMounted && containerRef.current) {
-        chartRef.current = renderBarChart(
-          containerRef.current,
-          dataRef.current,
-        );
+        chartRef.current = renderBarChart(containerRef.current, newData);
       }
     }
 
